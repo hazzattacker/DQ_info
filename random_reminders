@@ -1,0 +1,9 @@
+# Generate 50 real values, evenly spaced, between -6 and 6.
+x = np.linspace(-6,6,50, dtype=float)
+
+#rename a column header - both rename, but second requires dropping original
+df.rename(columns={'$a': 'a', '$b': 'b'}, inplace=True)
+admissions["actual_label"] = admissions["admit"]
+
+#crosstab - takes in two vectors (tables) and computes how many times each unique value appears between two matrices
+pd.crosstab(vector['A'], vector['B'])
