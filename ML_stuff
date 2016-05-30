@@ -1,0 +1,93 @@
+from sklearn.linear_model import LinearRegression
+
+import numpy as np
+import random
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+#LINEAR REGRESSION MODEL
+
+# Set a random seed to make the shuffle deterministic.
+np.random.seed(1)
+random.seed(1)
+# Randomly shuffle the rows in our dataframe
+sp500 = sp500.loc[np.random.permutation(sp500.index)]
+
+# Select 70% of the dataset to be training data
+highest_train_row = int(sp500.shape[0] * .7)
+train = sp500.iloc[:highest_train_row,:]
+
+# Select 30% of the dataset to be test data.
+test = sp500.iloc[highest_train_row:,:]
+
+# Initialize the linear regression class.
+regressor = LinearRegression()
+
+# Train the linear regression model on our dataset.
+regressor.fit(train[["value"]],train["next_day"])
+
+# Generate a list of predictions with our trained linear regression model
+predictions = regressor.predict(test[["value"]])
+
+# calculate the mean squared error
+mse = sum((predictions - test["next_day"])**2)/len(predictions)
+
+# Make a scatterplot with the actual values in the training set add a line through it
+plt.scatter(train["value"], train["next_day"])
+plt.plot(train["value"], regressor.predict(train[["value"]]))
+plt.show()
+
+---------------------------------------------------------------
+
+#LOGISTIC REGRESSION MODEL
+
+from sklearn.linear_model import LogisticRegression
+logistic_model = LogisticRegression()
+logistic_model.fit(admissions[["gpa"]], admissions["admit"])
+#returns predicted values of 0 and 1 (accept/decline)
+pred_probs = logistic_model.predict_proba(admissions["gpa"])
+
+---------------------------------------------------------------
+
+#MEASURES OF THE MODEL
+
+#Sensitivity = TPR = True positives / (True positives + False negatives)- 
+#How well does the model identify positive outcomes
+
+#specificity - opposite of sensitivity - how well the model identfies negative outcomes
+
+#accuracy = correct predictions/ number of observed
+
+---------------------------------------------------------------
+
+#ROC
+#establishing a good discrimination threshold
+
+#fpr = Fall out & tpr = Sensitivity
+pred_probs = model.predict_proba(test[["gpa"]])
+
+fpr, tpr, thresholds = metrics.roc_curve(test["actual_label"], pred_probs[:,1])
+
+#area under graph of roc_curve describes the probability that the classifier will 
+#rank a random positive observation higher than a random negative observation.
+#Since randomly guessing converges to a probability of 0.5, the higher the AUC the more accurate the model 
+
+auc_score = metrics.roc_auc_score(test[["actual_label"]], probabilities[:,1])
+---------------------------------------------------------------
+
+#CLUSTERING
+
+from sklearn.metrics.pairwise import euclidean_distances
+from sklearn.cluster import KMeans
+
+#Uses euclidean space to cluster different things - the larger the distance the more different they are
+#distance between two rows
+print(euclidean_distances(votes.iloc[0,3:], votes.iloc[2,3:]))
+
+#creates a kmeans model with 2 clusters
+kmeans_model = KMeans(n_clusters=2, random_state=1)
+#tramsforms votes to cluster space and calcs distances
+senator_distances = kmeans_model.fit_transform(votes.iloc[:,3:])
+#extract the cluster labels for each senator in 'votes' i.e which belongs to 1 and which to 2
+labels = kmeans_model.labels_
