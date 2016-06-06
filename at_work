@@ -1,0 +1,2 @@
+#producing a df based on certain column names
+features = [c for c in train.columns if c.startswith("cyl") or c.startswith("year")]
